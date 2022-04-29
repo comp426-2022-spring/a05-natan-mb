@@ -5,7 +5,7 @@
 const Database = require('better-sqlite3');
 
 // Connect to a database or create one if it doesn't exist yet.
-const db = new Database('C:/Users/natha/github-classroom/comp426-2022-spring/a05-natan-mb/data/db/log.db')
+const db = new Database('./data/db/log.db')
     // '../../data/db/log.db')
 
 // Is the database initialized or do we need to initialize it?
