@@ -130,30 +130,39 @@ document.getElementById("coins").addEventListener("submit", guessFlip)
 //     console.log(formDataJson)
 // })
 
-async function guessFlip(event) {
-    event.preventDefault();
-    var call = ""
+let btnHeads = document.getElementById("btnHeads")
+let btnTails = document.getElementById("btnTails")
 
-    if (isset($_POST["btnHeads"])) {
-        call = "heads"
-    } else if (isset($_POST["btnTails"])) {
-        call = "tails"
-    }
+btnHeads.addEventListener('click', (event) => {
+    event.preventDefault();
+    guessFlip(event, "heads")
+})
+
+btnTails.addEventListener('click', (event) => {
+    event.preventDefault();
+    guessFlip(event, "tails")
+})
+
+
+async function guessFlip(event, call) {
+    // var call = ""
 
     console.log("call:", call)
 
     const endpoint = "app/flip/call/"
     const url = document.baseURI+endpoint
 
-    const formEvent = event.currentTarget
+    // const formEvent = event.currentTarget
 
     try {
-        const formData = new FormData(formEvent);
+        // const formData = new FormData(formEvent);
+        let data = {guess: call}
 
-        const flip = await sendFlips({ url, formData });
+        const flip = await sendFlips({ url, data });
 
-        document.getElementById("yourGuess").innerHTML = "sOMETHING";
-        document.getElementById("actual").innerHTML = flip.flip;
+        document.getElementById("yourGuess").innerHTML = "You Guessed: " + call;
+        document.getElementById("actual").innerHTML = "You got: " + flip.flip;
+        document.getElementById("guessResult").innerHTML = "You " + (call == flip.flip ? "Win" : "Lose") + "!"
 
         focusDiv("guess")
     } catch (error) {
@@ -162,18 +171,20 @@ async function guessFlip(event) {
 }
 
 // Create a data sender
-async function sendFlips({ url, formData }) {
-    const plainFormData = Object.fromEntries(formData.entries());
-    const formDataJson = JSON.stringify(plainFormData);
-    console.log("formDataJson:", formDataJson);
+async function sendFlips({ url, data }) {
+    // const plainFormData = Object.fromEntries(formData.entries());
+    // const formDataJson = JSON.stringify(plainFormData);
+    // console.log("formDataJson:", formDataJson);
 
+    console.log('data', data)
+    console.log ('data string', JSON.stringify(data))
     const options = {
         method: "POST",
+        body: JSON.stringify(data),
         headers: {
             "Content-Type": "application/json",
             Accept: "application/json"
-        },
-        body: formDataJson
+        }
     };
 
     const response = await fetch(url, options);
